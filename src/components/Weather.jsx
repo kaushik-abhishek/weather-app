@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaWind } from "react-icons/fa";
+import { MdLocationOn } from "react-icons/md";
+import { WiHumidity } from "react-icons/wi";
 import "./Weather.css";
 
 // Reminder: Store API keys securely in environment variables in production.
 const API_KEY = process.env.REACT_APP_API_KEY;
-
-
-console.log("API_KEY:", API_KEY); // Log
 
 export const Weather = () => {
   const [city, setCity] = useState("");
@@ -30,8 +29,6 @@ export const Weather = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-
-      console.log(response);
 
       if (response.ok) {
         setWeatherData(data);
@@ -69,11 +66,42 @@ export const Weather = () => {
 
       {weatherData && (
         <div className="content">
-          <h2>{weatherData.name}</h2>
-          <p>{weatherData.weather[0].description}</p>
-          <p>Temperature: {(weatherData.main.temp - 273.15).toFixed(2)}°C</p>
-          <p>Humidity: {weatherData.main.humidity}%</p>
-          <p>Wind Speed: {weatherData.wind.speed} m/s</p>
+          <div className="weather-image">
+            <img
+              alt="weather-icon"
+              src={`https://openweathermap.org/img/wn/${weatherData.weather[0]?.icon}@2x.png`}
+            />
+            <h3 className="desc">{weatherData.weather[0].description}</h3>
+          </div>
+          <div className="weather-temp">
+            <h2>{(weatherData.main.temp - 273.15).toFixed(2)}°C</h2>
+          </div>
+          <div className="weather-city">
+            <div className="location">
+              <MdLocationOn className="location-icon" />
+            </div>
+            <p>
+              {weatherData.name}, <span>{weatherData.sys.country}</span>
+            </p>
+          </div>
+          <div className="weather-stats">
+            <div className="wind">
+              <div className="wind-icon">
+                <FaWind></FaWind>
+              </div>
+              <h3 className="wind-speed">{weatherData.wind.speed} m/s</h3>
+              <h3 className="wind-heading">Wind Speed</h3>
+            </div>
+            <div className="humidity">
+              <div className="humidity-icon">
+                <WiHumidity />
+              </div>
+              <h3 className="humidity-percentage">
+                {weatherData.main.humidity}%
+              </h3>
+              <h3 className="humidity-heading">Humidity</h3>
+            </div>
+          </div>
         </div>
       )}
     </div>
